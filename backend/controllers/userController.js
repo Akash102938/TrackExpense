@@ -99,7 +99,7 @@ export async function loginUser(req,res){
     } catch (err) {
         console.error(err)
         res.status(500).json({
-            sucess: false
+            sucess: false,
             message: 'Server Error'
         })
     }
