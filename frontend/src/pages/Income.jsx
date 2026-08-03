@@ -44,7 +44,7 @@ import { incomeStyles as styles } from "../assets/dummyStyles";
 import { getAuthHeaders as getAuthHeadersFromStorage } from "../utils/auth";
 
 // Base URL for API requests
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://trackexpense-backend-0343.onrender.com//api";
 
 /**
  * Converts a raw date input or 'YYYY-MM-DD' string to an ISO string, 

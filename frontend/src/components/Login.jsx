@@ -13,7 +13,7 @@ import axios from "axios";
 
 function Login({
   onLogin,
-  API_URL = "http://localhost:4000",
+  API_URL = "https://trackexpense-backend-0343.onrender.com/",
 }) {
   const navigate = useNavigate();
 

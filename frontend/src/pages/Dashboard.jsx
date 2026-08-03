@@ -12,7 +12,7 @@ import AddTransactionModal from '../components/Add.jsx'
 
 import { getAuthHeaders } from '../utils/auth.js'
 
-const API_BASE = 'http://localhost:4000/api'
+const API_BASE = 'https://trackexpense-backend-0343.onrender.com//api'
 
 // to convert date to ISO timeline
 function toIsoWithClientTime(dateValue) {
