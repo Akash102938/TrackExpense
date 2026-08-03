@@ -7,7 +7,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { getStoredToken } from '../utils/auth.js';
 
-const BASE_URL = "https://trackexpense-backend-0343.onrender.com//api";
+const BASE_URL = "https://trackexpense-backend-0343.onrender.com/api";
 
 Modal.setAppElement('#root');
 

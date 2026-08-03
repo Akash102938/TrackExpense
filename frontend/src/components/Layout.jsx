@@ -28,7 +28,7 @@ import { Outlet } from 'react-router-dom';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const API_BASE = 'https://trackexpense-backend-0343.onrender.com//api';
+const API_BASE = 'https://trackexpense-backend-0343.onrender.com/api';
 
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,

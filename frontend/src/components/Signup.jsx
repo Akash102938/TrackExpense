@@ -4,7 +4,7 @@ import axios from "axios";
 import { ArrowLeft, Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
-function Signup({ onSignup, API_URL = "https://trackexpense-backend-0343.onrender.com/" }) {
+function Signup({ onSignup, API_URL = "https://trackexpense-backend-0343.onrender.com" }) {
     const navigate = useNavigate();
 
     const [name, setName] = useState("");

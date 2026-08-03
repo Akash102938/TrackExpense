@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { getStoredToken } from '../utils/auth.js';
 
-const BASE_URL = 'https://trackexpense-backend-0343.onrender.com//api';
+const BASE_URL = 'https://trackexpense-backend-0343.onrender.com/api';
 
 function Navbar({ user: propUser, onLogout }) {
   const navigate = useNavigate();
