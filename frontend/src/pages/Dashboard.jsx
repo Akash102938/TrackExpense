@@ -193,19 +193,28 @@ const Dashboard = () => {
     );
   };
 
-  const renderMobileLegend = () => (
-    <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs text-gray-600">
-      {financialOverviewData.map((entry, index) => (
-        <div key={`mobile-legend-${entry.name}-${index}`} className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1 shadow-sm">
-          <span
-            className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: COLORS[index % COLORS.length] }}
-          />
-          <span>{entry.name}</span>
-        </div>
-      ))}
-    </div>
-  );
+  const renderMobileLegend = () => {
+    const total = financialOverviewData.reduce((sum, entry) => sum + Number(entry.value || 0), 0) || 1;
+    return (
+      <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs text-gray-600">
+        {financialOverviewData.map((entry, index) => {
+          const percentage = Math.round((Number(entry.value || 0) / total) * 100);
+          return (
+            <div
+              key={`mobile-legend-${entry.name}-${index}`}
+              className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1 shadow-sm"
+            >
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              />
+              <span>{`${entry.name}: ${percentage}%`}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const serverRecent = overviewMeta.recentTransactions || [];
   const serverRecentIncome = serverRecent
