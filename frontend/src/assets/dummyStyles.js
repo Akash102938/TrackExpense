@@ -32,7 +32,7 @@ export const dashboardStyles = {
   gaugeGrid: "grid grid-cols-1 -mx-5 xl:-mx-5 md:grid-cols-3 md:gap-13 lg:gap-3 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8",
   
   // Pie chart container styles
-  pieChartContainer: "hidden md:block bg-white lg:-mx-5.5 md:-mx-4 lg:p-1 xl:-mx-3 rounded-xl p-5 shadow-sm border border-gray-100 relative overflow-hidden mb-8",
+  pieChartContainer: "bg-white lg:-mx-5.5 md:-mx-4 lg:p-1 xl:-mx-3 rounded-xl p-5 shadow-sm border border-gray-100 relative overflow-hidden mb-8",
   pieChartHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3",
   pieChartTitle: "text-xl lg:pt-3 xl:pl-3 font-bold text-gray-800 mb-5 flex items-center gap-3",
   pieChartSubtitle: "text-sm lg:text-center xl:text-start xl:pl-3 text-gray-500 mb-3",
