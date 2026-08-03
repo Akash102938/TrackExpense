@@ -133,12 +133,12 @@ function Sidebar({ user, isCollapsed, setIsCollapsed }) {
           </div>
 
           {/* Footer */}
-          <div className={sidebarStyles.footerContainer.base}>
+          <div className={cn(sidebarStyles.footerContainer.base, "flex flex-col gap-2")}> 
             <a
               href="https://hexadigital.in/contact-us/"
               target="_blank"
               rel="noreferrer"
-              className={sidebarStyles.footerLink.base}
+              className={cn(sidebarStyles.footerLink.base, "w-full")}
             >
               <HelpCircle size={20} />
               {!isCollapsed && <span>Support</span>}
@@ -146,7 +146,7 @@ function Sidebar({ user, isCollapsed, setIsCollapsed }) {
 
             <button
               onClick={handleLogout}
-              className={sidebarStyles.logoutButton.base}
+              className={cn(sidebarStyles.logoutButton.base, "w-full")}
             >
               <LogOut size={20} />
               {!isCollapsed && <span>Logout</span>}
@@ -218,17 +218,18 @@ function Sidebar({ user, isCollapsed, setIsCollapsed }) {
               </ul>
 
               {/* Footer */}
-              <div className={sidebarStyles.mobileFooter}>
+              <div className={cn(sidebarStyles.mobileFooter, "flex flex-col gap-3")}>
                 <a
                   href="https://hexadigital.in/contact-us/"
                   target="_blank"
                   rel="noreferrer"
+                className="flex items-center gap-3 py-2"
                 >
                   <HelpCircle size={20} />
                   <span>Support</span>
                 </a>
 
-                <button onClick={handleLogout}>
+                <button onClick={handleLogout} className="flex items-center gap-3 py-2">
                   <LogOut size={20} />
                   <span>Logout</span>
                 </button>

@@ -500,8 +500,9 @@ const Dashboard = () => {
           </h3>
         </div>
 
-        <div className={`${dashboardStyles.pieChartHeight} relative w-full h-[320px] min-w-0`}>
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <div className="relative w-full min-w-0">
+          <div className="w-full h-72 sm:h-80">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <PieChart className={chartStyles.pieChart}>
               <Pie
                 data={financialOverviewData}
@@ -542,8 +543,13 @@ const Dashboard = () => {
                 />
               )}
             </PieChart>
-          </ResponsiveContainer>
-          {isMobile && renderMobileLegend()}
+            </ResponsiveContainer>
+          </div>
+          {isMobile && financialOverviewData.length > 0 && (
+            <div className="mt-4 px-2 sm:px-0">
+              {renderMobileLegend()}
+            </div>
+          )}
         </div>
       </div>
 
