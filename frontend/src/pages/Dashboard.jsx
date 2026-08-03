@@ -48,6 +48,14 @@ const Dashboard = () => {
   const [overviewMeta, setOverviewMeta] = useState({});
   const [showAllIncome, setShowAllIncome] = useState(false);
   const [showAllExpense, setShowAllExpense] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth < 768);
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
 
   const [newTransaction, setNewTransaction] = useState({
     date: new Date().toISOString().split("T")[0],
@@ -184,6 +192,20 @@ const Dashboard = () => {
       </text>
     );
   };
+
+  const renderMobileLegend = () => (
+    <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs text-gray-600">
+      {financialOverviewData.map((entry, index) => (
+        <div key={`mobile-legend-${entry.name}-${index}`} className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1 shadow-sm">
+          <span
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+          />
+          <span>{entry.name}</span>
+        </div>
+      ))}
+    </div>
+  );
 
   const serverRecent = overviewMeta.recentTransactions || [];
   const serverRecentIncome = serverRecent
@@ -474,14 +496,14 @@ const Dashboard = () => {
             <PieChart className={chartStyles.pieChart}>
               <Pie
                 data={financialOverviewData}
-                cx="45%"
+                cx={isMobile ? "50%" : "45%"}
                 cy="50%"
-                innerRadius={70}
-                outerRadius={100}
+                innerRadius={isMobile ? 50 : 70}
+                outerRadius={isMobile ? 80 : 100}
                 paddingAngle={2}
                 dataKey="value"
-                label={renderDonutLabel}
-                labelLine={true}
+                label={isMobile ? false : renderDonutLabel}
+                labelLine={isMobile ? false : true}
               >
                 {financialOverviewData.map((entry, index) => (
                   <Cell
@@ -497,19 +519,22 @@ const Dashboard = () => {
                 contentStyle={dashboardStyles.tooltipContent}
                 itemStyle={dashboardStyles.tooltipItem}
               />
-              <Legend
-                layout="vertical"
-                verticalAlign="middle"
-                align="right"
-                formatter={(v) => (
-                  <span className={dashboardStyles.legendText}>{v}</span>
-                )}
-                iconSize={10}
-                iconType="circle"
-                wrapperStyle={{ ...(dashboardStyles.legendWrapper || {}), right: 8 }}
-              />
+              {!isMobile && (
+                <Legend
+                  layout="vertical"
+                  verticalAlign="middle"
+                  align="right"
+                  formatter={(v) => (
+                    <span className={dashboardStyles.legendText}>{v}</span>
+                  )}
+                  iconSize={10}
+                  iconType="circle"
+                  wrapperStyle={{ ...(dashboardStyles.legendWrapper || {}), right: 8 }}
+                />
+              )}
             </PieChart>
           </ResponsiveContainer>
+          {isMobile && renderMobileLegend()}
         </div>
       </div>
 
