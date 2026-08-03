@@ -23,7 +23,7 @@ function Signup({ onSignup, API_URL = "http://localhost:4000" }) {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            return response.data || null;
+            return response.data?.user || response.data || null;
         } catch (error) {
             console.warn("Profile fetch failed:", error);
             return null;

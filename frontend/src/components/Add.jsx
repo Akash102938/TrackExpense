@@ -1,5 +1,7 @@
 import React from 'react'
 import { modalStyles } from '../assets/dummyStyles.js'
+// Fixed: Imported missing X icon
+import { X } from 'lucide-react'
 
 const AddTransactionModal = ({
   showModal,
@@ -24,7 +26,8 @@ const AddTransactionModal = ({
   const colorClass = modalStyles.colorClasses[color];
 
   return (
-    <div classname={modalStyles.overlay}>
+    // Fixed: Corrected classname to camelCase className
+    <div className={modalStyles.overlay}>
         <div className={modalStyles.modalContainer}>
            <div className={modalStyles.modalHeader}>
              <h3 className={modalStyles.modalTitle}>
@@ -43,8 +46,9 @@ const AddTransactionModal = ({
             <div className={modalStyles.form}>
               <div>
                 <label className={modalStyles.label}>Description</label>
+                {/* Fixed: Added missing (e) parameter */}
                 <input type="text" value={newTransaction.description} 
-                onChange={()=> setNewTransaction((prev)=> ({
+                onChange={(e)=> setNewTransaction((prev)=> ({
                     ...prev,
                     description: e.target.value,
                 }))
@@ -59,8 +63,9 @@ const AddTransactionModal = ({
 
               <div>
                 <label className={modalStyles.label}>Amount</label>
+                {/* Fixed: Added missing (e) parameter */}
                 <input type="number" value={newTransaction.amount} 
-                onChange={()=> setNewTransaction((prev)=> ({
+                onChange={(e)=> setNewTransaction((prev)=> ({
                     ...prev,
                     amount: e.target.value,
                 }))
@@ -100,23 +105,26 @@ const AddTransactionModal = ({
 
             <div>
                 <label className={modalStyles.label}>Category</label>
+                {/* Fixed: Added missing (e) parameter */}
                 <select value={newTransaction.category}
-                onChange={()=> setNewTransaction((prev)=> ({
+                onChange={(e)=> setNewTransaction((prev)=> ({
                     ...prev,
                     category: e.target.value
                 }))
                 } className={modalStyles.input(colorClass.ring)}>
-                    {categories.map((cat)=>{
+                    {/* Fixed: Replaced curly braces with parentheses for an implicit return */}
+                    {categories.map((cat)=>(
                         <option value={cat} key={cat}>
                             {cat}
                         </option>
-                    })}
+                    ))}
                 </select>
             </div>
 
             <div>
                 <label className={modalStyles.label}>Date</label>
-                <input type="date" value={newTransaction.date} onChange={(e)=> newTransaction ((prev)=>({
+                {/* Fixed: Corrected call structure from newTransaction to setNewTransaction */}
+                <input type="date" value={newTransaction.date} onChange={(e)=> setNewTransaction ((prev)=>({
                     ...prev,
                     date: e.target.value
                   }))

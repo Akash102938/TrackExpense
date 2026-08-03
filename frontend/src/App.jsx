@@ -12,6 +12,9 @@ import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Income from "./pages/Income";
+import Expense from "./pages/Expense";
+import Profile from "./pages/Profile";
 
 const API_URL = "http://localhost:4000";
 
@@ -98,7 +101,7 @@ function App() {
               }
             );
 
-            const profile = response.data;
+            const profile = response.data?.user || response.data;
 
             setUser(profile);
             setToken(storedToken);
@@ -182,6 +185,16 @@ function App() {
     navigate("/login");
   };
 
+  // FIXED: Handler for updating user profile state and storage
+  const handleUpdateProfile = (updatedUser) => {
+    setUser(updatedUser);
+    if (localStorage.getItem("token")) {
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } else {
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+  };
+
   // Transaction helpers
   const addTransaction = (transaction) => {
     setTransactions((prev) => [transaction, ...prev]);
@@ -249,7 +262,7 @@ function App() {
           }
         >
           <Route
-            index
+            path="/"
             element={
               <Dashboard
                 user={user}
@@ -261,7 +274,51 @@ function App() {
               />
             }
           />
+
+          <Route
+            path="/income"
+            element={
+              <Income
+                transactions={transactions}
+                addTransaction={addTransaction}
+                editTransaction={editTransaction}
+                deleteTransaction={deleteTransaction}
+                refreshTransactions={refreshTransactions}
+              />
+            }
+          />
+
+          <Route
+            path="/expense"
+            element={
+              <Expense
+                transactions={transactions}
+                addTransaction={addTransaction}
+                editTransaction={editTransaction}
+                deleteTransaction={deleteTransaction}
+                refreshTransactions={refreshTransactions}
+              />
+            }
+          />
+
+          {/* FIXED: Corrected prop names and passed handler */}
+          <Route 
+            path="/profile" 
+            element={
+              <Profile 
+                user={user} 
+                onUpdateProfile={handleUpdateProfile} 
+                onLogout={handleLogout}
+              />
+            }
+          />
         </Route>
+
+        {/* FIXED: Replaced '+' with '*' for catch-all route */}
+        <Route 
+          path="*" 
+          element={<Navigate to={user ? '/' : "/login"} replace />}
+        />
       </Routes>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { styles } from '../assets/dummyStyles';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -45,6 +45,8 @@ const CATEGORY_ICONS = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+import { getAuthHeaders } from '../utils/auth.js';
+
 /**
  * Filters a transaction list to the given time frame.
  */
@@ -64,7 +66,8 @@ const filterTransactions = (transactions, frame) => {
 
     case 'monthly':
       return transactions.filter(
-        (t) => new Date(t.date).getMonth() === now.getMonth()
+        (t) => new Date(t.date).getMonth() === now.getMonth() &&
+               new Date(t.date).getFullYear() === now.getFullYear()
       );
 
     default:
@@ -97,11 +100,10 @@ function Layout({ onLogout, user }) {
 
   // ── Data fetching ──────────────────────────────────────────────────────────
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
 
       const [incomeRes, expenseRes] = await Promise.all([
         axios.get(`${API_BASE}/income/get`, { headers }),
@@ -144,14 +146,13 @@ function Layout({ onLogout, user }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // ── CRUD handlers ──────────────────────────────────────────────────────────
 
   const addTransaction = async (transaction) => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint =
         transaction.type === 'income' ? 'income/add' : 'expense/add';
       await axios.post(`${API_BASE}/${endpoint}`, transaction, { headers });
@@ -168,8 +169,7 @@ function Layout({ onLogout, user }) {
 
   const editTransaction = async (id, transaction) => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint =
         transaction.type === 'income' ? 'income/update' : 'expense/update';
       await axios.put(`${API_BASE}/${endpoint}/${id}`, transaction, { headers });
@@ -186,8 +186,7 @@ function Layout({ onLogout, user }) {
 
   const deleteTransaction = async (id, type) => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint = type === 'income' ? 'income/delete' : 'expense/delete';
       await axios.delete(`${API_BASE}/${endpoint}/${id}`, { headers });
       await fetchTransactions();
@@ -205,7 +204,7 @@ function Layout({ onLogout, user }) {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
   // ── Derived state ──────────────────────────────────────────────────────────
 
@@ -317,16 +316,19 @@ function Layout({ onLogout, user }) {
 
   // ── Outlet context ─────────────────────────────────────────────────────────
 
-  const outletContext = {
-    transactions: filteredTransactions,
-    addTransaction,
-    editTransaction,
-    deleteTransaction,
-    refreshTransactions: fetchTransactions,
-    timeFrame,
-    setTimeFrame,
-    lastUpdated,
-  };
+  const outletContext = useMemo(
+    () => ({
+      transactions: filteredTransactions,
+      addTransaction,
+      editTransaction,
+      deleteTransaction,
+      refreshTransactions: fetchTransactions,
+      timeFrame,
+      setTimeFrame,
+      lastUpdated,
+    }),
+    [filteredTransactions, fetchTransactions, timeFrame, lastUpdated]
+  );
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -334,7 +336,6 @@ function Layout({ onLogout, user }) {
     <div className={styles.layout.root}>
       <Navbar user={user} onLogout={onLogout} />
 
-      {/* FIX #2: was setSideCollapsed (typo) */}
       <Sidebar
         user={user}
         isCollapsed={sidebarCollapsed}
@@ -375,7 +376,7 @@ function Layout({ onLogout, user }) {
             </p>
           </div>
 
-          {/* Monthly Income — FIX #4: was showing allTimeSavings */}
+          {/* Monthly Income */}
           <div className={styles.statCards.card}>
             <div className={styles.statCards.cardHeader}>
               <div>
@@ -442,7 +443,6 @@ function Layout({ onLogout, user }) {
           <div className={styles.grid.leftColumn}>
             <div className={styles.cards.base}>
               <div className={styles.cards.header}>
-                {/* FIX #3: was {{timeFrameLabel}} (double braces) */}
                 <h3 className={styles.cards.title}>
                   <TrendingUp className="w-6 h-6 text-teal-500" />
                   Financial Overview
@@ -474,14 +474,12 @@ function Layout({ onLogout, user }) {
                 </button>
               </div>
 
-              {/* FIX #5: was using dataStackingIcon style for both wrapper and icon */}
               <div className={styles.transactions.infoContainer}>
                 <Info className={styles.transactions.dataStackingIcon} />
                 <span>Transactions are stacked by date (newest first)</span>
               </div>
 
               <div className={styles.transactions.listContainer}>
-                {/* FIX #6: renamed map param from `transactions` → `transaction` */}
                 {displayedTransactions.map((transaction) => {
                   const { id, type, category, description, date, amount } =
                     transaction;
@@ -578,7 +576,6 @@ function Layout({ onLogout, user }) {
                 ))}
               </div>
 
-              {/* FIX #7: both income & expense cards now inside summaryGrid */}
               <div className={styles.categories.summaryContainer}>
                 <div className={styles.categories.summaryGrid}>
                   <div className={styles.categories.summaryIncomeCard}>

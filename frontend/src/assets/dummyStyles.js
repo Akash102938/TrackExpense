@@ -204,11 +204,11 @@ export const expensePageStyles = {
   cardsGrid: "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-5",
   
   // Chart container
-  chartContainer: "hidden md:block bg-white rounded-xl p-4 -mx-7 lg:-mx-0 shadow-sm border border-gray-100",
+  chartContainer: "bg-white rounded-xl p-4 -mx-7 lg:-mx-0 shadow-sm border border-gray-100",
   chartHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5",
   chartTitle: "text-xl font-bold text-gray-800 mb-5 flex items-center gap-3",
   exportButton: "flex items-center gap-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg transition-all text-sm hover:shadow-md",
-  chart: "h-80",
+  chart: "h-80 min-h-[18rem]",
   
   // Transactions container
   transactionsContainer: "bg-white rounded-2xl p-5 -mx-4 lg:-mx-0 md:-mx-5 shadow-sm border border-gray-100 relative overflow-hidden",

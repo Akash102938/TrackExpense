@@ -3,55 +3,61 @@ import { navbarStyles } from "../assets/dummyStyles";
 import img1 from "../assets/logo.png";
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axios from 'axios';
+import { getStoredToken } from '../utils/auth.js';
 
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = 'http://localhost:4000/api';
 
 function Navbar({ user: propUser, onLogout }) {
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  
+  // ✅ Fixed: Added user state so setUser function works
+  const [user, setUser] = useState(propUser || { name: "", email: "" });
 
-  const user = propUser || {
-    name: "",
-    email: "",
-  };
+  // Update internal state if propUser changes externally
+  useEffect(() => {
+    if (propUser) {
+      setUser(propUser);
+    }
+  }, [propUser]);
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
+  // ✅ Fixed: Corrected API call logic
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = getStoredToken();
+        if (!token) return;
 
-//to fetch the user data from server
+        const response = await axios.get(`${BASE_URL}/user/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const userData = response.data.user || response.data;
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to load profile', error);
+      }
+    };
 
-useEffect(()=> {
-  const fetchUserData = async ()=>{
-    try {
-      const token = localStorage.getItem('token')
-      if(!token ) return
-
-      const response = await axios.get(`${BASE_URL}/user/me`,{
-        headers: {Authorization: `Bearer ${token}`}
-      });
-      const userData = response.data.user || response.data;
-      setUser(userData)
-    } catch (error) {
-      console.error('Failed to load profile',error);
-    }
-    if(!propUser){
+    // Only fetch if initial propUser was not provided
+    if (!propUser) {
       fetchUserData();
     }
-  }
-},[propUser])
+  }, [propUser]);
 
-const handleLogout = ()=>{
-  setMenuOpen(false)
-  localStorage.removeItem('token')
-  onLogout?.();
-  navigate('/login')
-}
+  const handleLogout = () => {
+    setMenuOpen(false);
+    localStorage.removeItem('token');
+    onLogout?.();
+    navigate('/login');
+  };
 
-//closes the  toggle menu if click outside the box
- useEffect(() => {
+  // Closes the toggle menu if clicked outside
+  useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
@@ -85,6 +91,7 @@ const handleLogout = ()=>{
             
             {/* Button */}
             <button
+              type="button"
               onClick={toggleMenu}
               className={navbarStyles.userButton}
             >
@@ -138,6 +145,7 @@ const handleLogout = ()=>{
                 <div className={navbarStyles.menuItemContainer}>
                   
                   <button
+                    type="button"
                     onClick={() => {
                       navigate("/profile");
                       setMenuOpen(false);
@@ -148,15 +156,16 @@ const handleLogout = ()=>{
                     <span>My Profile</span>
                   </button>
 
-                 <div className={navbarStyles.menuItemBorder}>
-                     <button
-                    onClick={handleLogout}
-                    className={navbarStyles.logoutButton}
-                  > 
-                    <LogOut className="w-4- h-4"/>
-                    <span>Logout</span>
-                  </button>
-                 </div>
+                  <div className={navbarStyles.menuItemBorder}>
+                    <button
+                      onClick={handleLogout}
+                      className={navbarStyles.logoutButton}
+                    > 
+                      {/* ✅ Fixed typo: className="w-4 h-4" */}
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
 
                 </div>
               </div>

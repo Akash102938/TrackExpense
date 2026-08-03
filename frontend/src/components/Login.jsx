@@ -38,7 +38,7 @@ function Login({
         }
       );
 
-      return response.data || null;
+      return response.data?.user || response.data || null;
     } catch (error) {
       console.warn("Profile fetch failed:", error);
       return null;

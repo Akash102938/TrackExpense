@@ -27,15 +27,15 @@ export async function addIncome(req, res) {
         const newIncome = await incomeModel.create({
             userId,
             description,
-            amount,
+            amount: parseFloat(amount),
             category,
             date: new Date(date),
         });
-        await newIncome.save()
+        await newIncome.save();
         res.status(201).json({
             success: true,
             message: "Income added successfully",
-            data: income,
+            data: newIncome,
         });
     } catch (error) {
         console.error(error);
